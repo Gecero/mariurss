@@ -115,7 +115,11 @@ func main() {
 				contentText = contentNode.Text()
 				contentText = strings.Trim(contentText, "\n ")
 				contentText = strings.ReplaceAll(contentText, "\n", "&nbsp;")
-				contentText = contentText[0:300] + "..."
+				length := 350
+				if len(contentText) < length {
+					length = len(contentText)
+				}
+				contentText = contentText[0:length] + "..."
 			}
 
 			feedHTML += "<tr>"
