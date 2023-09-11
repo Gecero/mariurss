@@ -14,6 +14,8 @@ mkdir -p "$store"
 cd "$store"
 
 while IFS=$'\n' read -r url; do
+    # Remove spaces / turn comments (using '#') into valid urls
+    url=$(echo "$url" | sed "s/ //g")
     ID=$(echo "$url" | sha1sum | head -c 40)
     file=$ID
 
