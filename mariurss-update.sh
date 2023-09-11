@@ -1,5 +1,5 @@
 #!/bin/sh
-# MARIURSS-UPDATE.SH (2023 Sep 08)
+# MARIURSS-UPDATE.SH
 # Requirements: Curl, Coreutils, should work in bourne shell
 # Downloads/Syncs given remote files and stores them in a 
 # mariurss-compatible format.
@@ -9,7 +9,10 @@
 # Command-line parameter: The location of the 'store'. This is the 
 #                         directory where the feed data will be stored
 # Stdin: The URLs to fetch the data from. One URL per line.
-store=/tmp/mariurss-store/
+if [ $# -ne 1 ]
+then store=/tmp/mariurss-store/
+else store=$1
+fi
 mkdir -p "$store"
 cd "$store"
 
