@@ -14,7 +14,7 @@ go build .
 
 The two tools, mariurss-update and mariurss are designed to work together, not standalone.
 
-You can them like this:
+You can use them like this:
 ```
 cat my-feed-urls.txt | ./mariurss-update.sh | ./mariurss -html=index.html
 ```
