@@ -27,6 +27,15 @@ func readLines() ([]string, error) {
 	return lines, nil
 }
 
+func crampString(str string, bounds int) string {
+	indicator := "..."
+	if len(str) > bounds {
+		return str[0:bounds-len(indicator)] + indicator
+	} else {
+		return str
+	}
+}
+
 /*
 Program algorithm:
 1. Read the files in the paths given via stdin
@@ -115,11 +124,7 @@ func main() {
 				contentText = contentNode.Text()
 				contentText = strings.Trim(contentText, "\n ")
 				contentText = strings.ReplaceAll(contentText, "\n", "&nbsp;")
-				length := 350
-				if len(contentText) < length {
-					length = len(contentText)
-				}
-				contentText = contentText[0:length] + "..."
+				contentText = crampString(contentText, 350)
 			}
 
 			feedHTML += "<tr>"
