@@ -21,3 +21,6 @@
 # Go workspace file
 go.work
 
+# mariurss-specific
+aggregate/aggregate
+htmled/htmled

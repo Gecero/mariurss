@@ -1,0 +1,29 @@
+#!/bin/sh
+# This script downloads/syncs given URLs to disk.
+#
+# Requirements: Curl, Coreutils
+# Usage: As first command-line parameter you can give a location to 
+#        a feed store directory. Via stdin you must give one URL per
+#        line. The path of successful downloads will be printed to stdout.
+#        Errors are printed to stderr. Exit code 1 on inaccessible store,
+#        otherwise 0, even with other (non-fatal) errors.
+
+[ $# -ne 1 ] && store=/tmp/mariurss-store/ || store=$1
+[ ! -d "$store" ] && { mkdir -p "$store" 2>/dev/null || { echo "Can't access/create store directory at '$store'" >&2; exit 1; }; }
+cd "$store"
+
+while IFS=$'\n' read -r url; do
+    # Remove spaces / turn comments (using '#') into valid urls
+    url=$(echo "$url" | sed "s/ //g")
+    ID=$(echo "$url" | sha1sum | head -c 40)
+    file=$ID
+
+    curl --silent --connect-timeout 60 --output "$file" --time-cond "$file" "$url" || \
+        echo "Could not download from URL '$url'" >&2 # to stderr
+    
+    if [ -e "$file" ]; then
+        echo "$(pwd)/$file"
+        grep --silent "429 Too Many Requests" "$file" && \
+            echo "It seems that URL '$url' received a '429 Too Many Requests' response" >&2
+    fi
+done

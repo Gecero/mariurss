@@ -3,6 +3,8 @@
 A Unix program that collects RSS feeds and inserts them into an HTML page.
 [(Demo)](https://gecero.de/rss/)
 
+## Everything below this line is outdated. It will be updated soon.
+
 ## Usage
 To run this program you will need a bourne-shell compatible shell, GNU coreutils, curl and golang.   
 Build by running:

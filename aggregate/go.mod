@@ -1,4 +1,4 @@
-module gecero.de/mariurss
+module gecero.de/aggregate
 
 go 1.21.0
 
