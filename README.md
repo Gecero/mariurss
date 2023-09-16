@@ -1,33 +1,35 @@
 # mariurss
 
-A Unix program that collects RSS feeds and inserts them into an HTML page.
+A Unix toolchain that collects RSS feeds and inserts them into an HTML page.
 [(Demo)](https://gecero.de/rss/)
-
-## Everything below this line is outdated. It will be updated soon.
 
 ## Usage
 To run this program you will need a bourne-shell compatible shell, GNU coreutils, curl and golang.   
 Build by running:
 ```sh
 git clone https://codeberg.org/mdalp/mariurss
-cd mariurss
+cd mariurss/aggregate
 go build .
+cd ../htmled
+go build .
+cd ..
 ```
 
-The two tools, mariurss-update and mariurss are designed to work together, not standalone.
-
-You can use them like this:
+The tools follow unix philosophy and are bundled together via pipes. For example:   
 ```
-cat my-feed-urls.txt | ./mariurss-update.sh | ./mariurss -html=index.html
+cat my-feed-urls.txt | update/update | aggregate/aggregate | htmled/htmled index.html "#rss-feed"
 ```
 
-### mariurss-update
-The tool that downloads the feeds to disk.   
-Give feed URLs to stdin. These will then be downloaded by this tool. The feed URLs may contain comments in the form of non-special-character texts behind a ``#``. You may optionally specify a path as first parameter, to which the feeds will be downloaded, if you don't, they will be stored in ``/tmp/mariurss-store/``. Download errors come in stderr. On a successful download, the path of the downloaded feed will be given to stdout. Exit codes are not used.   
+### ``update [store path]``
+This tool downloads feeds to disk.   
+Give feed URLs to stdin. These will then be downloaded by this tool. The feed URLs may contain comments in the form of non-special-character texts (allowed characters: 'a-zA-z0-9,.- ') behind a ``#``. You may optionally specify a path as first parameter, to which the feeds will be downloaded, if you don't, they will be stored in ``/tmp/mariurss-store/``. Download errors come from stderr. On a successful download, the path of the downloaded feed will be given to stdout. Exit codes are not used.   
 
-### mariurss
-The tool that modifies an HTML file to contain the latest feed information.   
-Give file paths of RSS/Atom files via stdin. Ideally, you pipe the output of mariurss-update into mariurss. As command line parameter, you must specify the path of the HTML file to manipulate, by writing ``-html=<path of html file>``. The given HTML file must be in UTF-8 format. Stdout will output nothing on success or may contain error messages. Exit codes are not used.   
-The tool will look for the HTML element ``#mariurss-content``, clear it, and insert a table featuring all feed news entries found in all files specified in stdin, sorted chronologically (latest at top, oldest at bottom). It will also look for the HTML element ``#mariurss-time``, clear it and insert a timestamp.   
-The HTML elements inserted by mariurss have class labels so you can stylize them using CSS. These classes are: ``.mariurss-content-main`` (left table column), ``.mariurss-content-description`` (right table column), ``.mariurss-content-feed`` (left column, news feed title), ``.mariurss-content-date`` (left column, news entry date), ``.mariurss-content-title`` (left column, news entry title).   
+### ``aggregate``
+This tool aggregates RSS feeds and creates an HTML table respectively.   
+Give file paths of RSS/Atom files via stdin. The given HTML file must be in UTF-8 format. Stdout will output nothing on success or may contain error messages. Exit codes are not used.   
+The table will be in chronological order (newest at the top). It uses some CSS classes so you can stylize it to your liking: ``.mariurss-content-main`` (left table column), ``.mariurss-content-description`` (right table column), ``.mariurss-content-feed`` (left column, news feed title), ``.mariurss-content-date`` (left column, news entry date), ``.mariurss-content-title`` (left column, news entry title).
 
+### ``htmled <HTML file> <query selector>``
+This tool manipulates HTML files.   
+The given HTML file must be in UTF-8 format. If more than one element that fits the query selector is found, all of them will be replaced. What you input via stdin will replace the contents of all HTML elements that fit the given [query selector](https://developer.mozilla.org/en-US/docs/Web/API/Document_object_model/Locating_DOM_elements_using_selectors). Exit code is zero on success, non-zero on failure.   
+Also, this is the only tool from this toolchain that can be used sensibly outside of this toolchain. For instance, you can also use it to write a timestamp into the HTML file after updating the RSS feed (``date | htmled/htmled index.html "#rss-timestamp"``).
