@@ -1,7 +1,7 @@
 # mariurss
 
 A Unix toolchain that collects RSS feeds and inserts them into an HTML page.
-[(Demo)](https://gecero.de/rss/)
+[(Demo)](https://gecero.de/r/)
 
 ## Usage
 To run this program you will need a bourne-shell compatible shell, GNU coreutils, curl and golang.   
