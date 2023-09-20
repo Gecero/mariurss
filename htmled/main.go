@@ -10,7 +10,7 @@ import (
 
 func main() {
 	if len(os.Args) != 3 {
-		panic("Illegal number of arguments. Syntax: htmled [html file] [query selector]")
+		panic("Illegal number of arguments. Syntax: htmled html-file query-selector")
 	}
 
 	filepath := os.Args[1]
