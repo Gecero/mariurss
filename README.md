@@ -26,7 +26,7 @@ Give feed URLs to stdin. These will then be downloaded by this tool. The feed UR
 
 ### ``aggregate``
 This tool aggregates RSS feeds and creates an HTML table respectively.   
-Give file paths of RSS/Atom files via stdin. The given HTML file must be in UTF-8 format. Stdout will output nothing on success or may contain error messages. Exit codes are not used.   
+Give file paths of RSS/Atom files via stdin. The given HTML file must be in UTF-8 format. On success, stdout will output the HTML code of a table containing the the news feeds entries. The first line is boilerplate (eg &lt;table&gt;), followed by one news entry per line, follwed by a final boilerplate line. On failure, an error log is written to stderr. Exit codes are not used.   
 The table will be in chronological order (newest at the top). It uses some CSS classes so you can stylize it to your liking: ``.mariurss-content-main`` (left table column), ``.mariurss-content-description`` (right table column), ``.mariurss-content-feed`` (left column, news feed title), ``.mariurss-content-date`` (left column, news entry date), ``.mariurss-content-title`` (left column, news entry title).
 
 ### ``htmled <HTML file> <query selector>``
