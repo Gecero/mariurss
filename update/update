@@ -18,6 +18,9 @@ while IFS=$'\n' read -r url; do
     ID=$(echo "$url" | sha1sum | head -c 40)
     file=$ID
 
+    # Skip if line is empty or comment
+    [ -z "$url" ] || [ "${url#\#}" != "${url}" ] && continue
+
     curl --silent --location --connect-timeout 60 --output "$file" --time-cond "$file" "$url" || \
         echo "Could not download from URL '$url'" >&2 # to stderr
     
