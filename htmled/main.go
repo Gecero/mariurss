@@ -25,6 +25,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer file.Close()
 
 	doc, err := goquery.NewDocumentFromReader(file)
 	if err != nil {
@@ -50,11 +51,6 @@ func main() {
 
 	// Write to file
 	err = goquery.Render(file, doc.Selection)
-	if err != nil {
-		panic(err)
-	}
-
-	err = file.Close()
 	if err != nil {
 		panic(err)
 	}
