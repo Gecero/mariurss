@@ -12,14 +12,13 @@
 [ ! -d "$store" ] && { mkdir -p "$store" 2>/dev/null || { echo "Can't access/create store directory at '$store'" >&2; exit 1; }; }
 cd "$store"
 
-while IFS=$'\n' read -r url; do
-    # Remove spaces / turn comments (using '#') into valid urls
-    url=$(echo "$url" | sed "s/ //g")
+fetch() {
+    url=$1
     ID=$(echo "$url" | sha1sum | head -c 40)
     file=$ID
 
-    # Skip if line is empty or comment
-    [ -z "$url" ] || [ "${url#\#}" != "${url}" ] && continue
+    # Skip if line is empty or comment (=starts with hashtag)
+    [ -z "$url" ] || [ "${url#\#}" != "${url}" ] && return
 
     curl --silent --location --connect-timeout 60 --output "$file" --time-cond "$file" "$url" || \
         echo "Could not download from URL '$url'" >&2 # to stderr
@@ -27,6 +26,15 @@ while IFS=$'\n' read -r url; do
     if [ -e "$file" ]; then
         echo "$(pwd)/$file"
         grep --silent "429 Too Many Requests" "$file" && \
-            echo "It seems that URL '$url' received a '429 Too Many Requests' response" >&2
-    fi
+            echo "It seems that URL '$url' received a '429 Too Many Requests' response" >&2 # to stderr
+    fi    
+}
+
+while IFS=$'\n' read -r url; do
+    # Space removal advantages: (1) turning comments (using '#')
+    # into valid URLs, (2) allows passing the URL as single variable
+    # to fetch()
+    fetch $(echo "$url" | sed "s/ //g") &
 done
+
+wait # wait for async fetches to finish
