@@ -33,6 +33,7 @@ func parseNewsFileAsync(path string, news chan News, wg *sync.WaitGroup) {
 	file, err := os.Open(path)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Error opening file:", err)
+		return
 	}
 	defer file.Close()
 
@@ -40,6 +41,7 @@ func parseNewsFileAsync(path string, news chan News, wg *sync.WaitGroup) {
 	feed, err := parser.Parse(file)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Error parsing file:", err)
+		return
 	}
 
 	for _, item := range feed.Items {
