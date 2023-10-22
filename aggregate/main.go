@@ -50,19 +50,24 @@ func parseNewsFileAsync(path string, news chan News, wg *sync.WaitGroup) {
 }
 
 func collectNewsItems(newsDB *[]News, newsChan chan News) {
+	now := time.Now()
 	for {
-		*newsDB = append(*newsDB, <-newsChan)
+		item := <-newsChan
+		// Only accept past items
+		if item.item.PublishedParsed.Before(now) {
+			*newsDB = append(*newsDB, item)
+		}
 	}
 }
 
 func readAndParse() []News {
+	// This goroutine collects news items from 'newsChan' to 'news', avoiding race condition
 	news := []News{}
 	newsChan := make(chan News)
 	var wg sync.WaitGroup
-	// This'll read from 'newsChan' to 'news' while avoiding race condition
 	go collectNewsItems(&news, newsChan)
 
-	// Read line-by-line, parse each file async
+	// Read line-by-line, parse each file in parallel
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		wg.Add(1)
