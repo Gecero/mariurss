@@ -17,17 +17,33 @@ fetch() {
     ID=$(echo "$url" | sha1sum | head -c 40)
     file=$ID
 
-    # Skip if line is empty or comment (=starts with hashtag)
+    # Skip if line is empty or a comment (that is: it starts with hashtag)
     [ -z "$url" ] || [ "${url#\#}" != "${url}" ] && return
 
-    curl --silent --location --connect-timeout 60 --output "$file" --time-cond "$file" "$url" || \
-        echo "Could not download from URL '$url'" >&2 # to stderr
-    
-    if [ -e "$file" ]; then
-        echo "$(pwd)/$file"
-        grep --silent "429 Too Many Requests" "$file" && \
-            echo "It seems that URL '$url' received a '429 Too Many Requests' response" >&2 # to stderr
-    fi    
+    # We aggressively track errors here because tracking them later in the 
+    # toolchain is a pain in the butt. To ensure all error messages are 
+    # printed one after another and not in parallel we print it in one 
+    # single echo statement.
+    ERRFILE="$(mktemp)"
+    if curl --silent --show-error --fail \
+        --location \
+        --connect-timeout 60 \
+        --output "$file" \
+        --tcp-fastopen \
+        --time-cond "$file" \
+        "$url" > "$ERRFILE" 2>&1
+    then
+        if [ -e "$file" ]; then
+	    # Print filename
+	    echo "$(pwd)/$file"
+
+	    if [ "$(cat "$(pwd)/$file" | wc -c)" = "0" ]; then
+                echo "Warning: Got empty response for URL '$url'" >&2
+	    fi
+        fi    
+    else
+        echo "Error: Could not download file." "\n\tURL: '$url'" "\n\t$(cat "$ERRFILE")" >&2
+    fi
 }
 
 while IFS=$'\n' read -r url; do
