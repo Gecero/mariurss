@@ -1,10 +1,10 @@
 # mariurss
 
-A Unix toolchain that collects RSS feeds and inserts them into an HTML page.
-[(Demo)](https://gecero.de/r/)
+A Unix toolchain that collects RSS feeds and inserts them into an HTML page.   
+A heavily customized demo page, with additional translations into German can be found [here](https://gecero.de/r/).
 
 ## Usage
-To run this program you will need a bourne-shell compatible shell, GNU coreutils, curl and golang.   
+To run this program you will need a bash-compatible shell, GNU coreutils, curl and golang.   
 Build by running:
 ```sh
 git clone https://github.com/gecero/mariurss
@@ -19,6 +19,8 @@ The tools follow unix philosophy and are bundled together via pipes. For example
 ```
 cat my-feed-urls.txt | update/update | aggregate/aggregate | htmled/htmled index.html "#rss-feed"
 ```
+
+For testing and reference, you can also see ``mariurss-sample.sh`` which will compile a basic sample feed HTML file with all data being stored inside of ``/tmp/``.   
 
 ### ``update [store path]``
 This tool downloads feeds to disk.   
