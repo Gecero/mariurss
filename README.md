@@ -7,7 +7,7 @@ A Unix toolchain that collects RSS feeds and inserts them into an HTML page.
 To run this program you will need a bourne-shell compatible shell, GNU coreutils, curl and golang.   
 Build by running:
 ```sh
-git clone https://codeberg.org/mdalp/mariurss
+git clone https://github.com/gecero/mariurss
 cd mariurss/aggregate
 go build .
 cd ../htmled
