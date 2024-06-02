@@ -1,7 +1,6 @@
 # mariurss
 
-A Unix toolchain that collects RSS feeds and inserts them into an HTML page.   
-A heavily customized demo page, with additional translations into German can be found [here](https://gecero.de/r/).
+A UNIX toolchain to aggregate RSS feeds into a static website. A customized live example with non-default translations into German can be found [here](https://gecero.de/r/).
 
 ## Usage
 To run this program you will need a bash-compatible shell, GNU coreutils, curl and golang.   
