@@ -1,4 +1,4 @@
-module gecero.de/aggregate
+module github.com/gecero/mariurss/aggregate
 
 go 1.21.0
 

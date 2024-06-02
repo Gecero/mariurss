@@ -1,4 +1,4 @@
-module gecero.de/htmled
+module github.com/gecero/mariurss/htmled
 
 go 1.21.1
 
