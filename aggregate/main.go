@@ -53,6 +53,9 @@ func collectNewsItems(newsDB *[]News, newsChan chan News) {
 	now := time.Now()
 	for {
 		item := <-newsChan
+		if item.item == nil || item.item.PublishedParsed == nil {
+			continue
+		}
 		// Only accept past items
 		if item.item.PublishedParsed.Before(now) {
 			*newsDB = append(*newsDB, item)
